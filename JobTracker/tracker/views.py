@@ -91,3 +91,18 @@ def delete_posting(request, pk):
     job_posting = JobPosting.objects.get(pk=pk)
     job_posting.delete()
     return redirect('dashboard')
+
+from django.http import JsonResponse
+from .functions import import_from_url
+
+def import_from_url_view(request):
+    if request.method == 'POST':
+        url = request.POST.get('url')
+        if not url:
+            return JsonResponse({'error': 'URL is required'}, status=400)
+        
+        job_data = import_from_url(url)
+        if isinstance(job_data, str):  # If an error occurred, the function returns a string message
+            return JsonResponse({'error': job_data}, status=400)
+        else:
+            return JsonResponse(job_data)

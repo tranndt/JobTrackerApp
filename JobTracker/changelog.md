@@ -12,3 +12,9 @@
             python manage.py makemigrations tracker
             python manage.py migrate
             ```
+
+#3:
+- Import functionality
+    - Can import title, company, location, description from LinkedIn url 
+
+#4:
