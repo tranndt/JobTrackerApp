@@ -10,4 +10,5 @@ class JobApplicationForm(forms.ModelForm):
 class JobPostingForm(forms.ModelForm):
     class Meta:
         model = JobPosting
-        fields = ['company_name', 'address']
+        fields = ['company_name', 'job_title', 'posting_url', 'location', 'is_remote', 'description']  # Include 'is_remote'
+

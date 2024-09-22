@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('company_name', models.CharField(max_length=255)),
-                ('address', models.CharField(max_length=255)),
+                ('location', models.CharField(max_length=255)),
                 ('latitude', models.FloatField(blank=True, null=True)),
                 ('longitude', models.FloatField(blank=True, null=True)),
             ],

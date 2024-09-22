@@ -1,8 +1,10 @@
-<h2>Job Posting Details</h2>
-<p><strong>Company Name:</strong> {{ job_posting.company_name }}</p>
-<p><strong>Address:</strong> {{ job_posting.address }}</p>
-<p><strong>Latitude:</strong> {{ job_posting.latitude }}</p>
-<p><strong>Longitude:</strong> {{ job_posting.longitude }}</p>
+<h2>{{ posting.job_title }}</h2>
+<h3>{{ posting.company_name }}</h3>
+<p><strong>Location:</strong> {{ posting.location }}</p>
+<p><strong>Date Created:</strong> {{ posting.date_created }}</p>
+<p><strong>Posting URL:</strong> <a href="{{ posting.posting_url }}" target="_blank">{{ posting.posting_url }}</a></p>
+<p><strong>Job Description:</strong></p>
+<div>{{ posting.description }}</div>
 
-<!-- Back button -->
+<a href="{% url 'edit_posting' posting.pk %}" class="button">Edit</a>
 <a href="{% url 'dashboard' %}" class="button">Back to Dashboard</a>

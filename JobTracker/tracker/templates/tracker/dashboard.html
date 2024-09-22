@@ -1,4 +1,4 @@
-<h2>Dashboard</h2>
+<h2>Job Postings Dashboard</h2>
 
 <!-- Button to view the map -->
 <a href="{% url 'map_view' %}" class="button">View Map</a>
@@ -6,25 +6,28 @@
 
 <!-- Job posting list -->
 <table>
-  <thead>
-    <tr>
-      <th>Company Name</th>
-      <th>Address</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for job in job_postings %}
-    <tr>
-      <td>{{ job.company_name }}</td>
-      <td>{{ job.address }}</td>
-      <td>
-        <!-- View job posting button -->
-        <a href="{% url 'view_posting' job.id %}">View</a>
-        <!-- Delete job posting button -->
-        <a href="{% url 'delete_posting' job.id %}" onclick="return confirm('Are you sure you want to delete this posting?');">Delete</a>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
+    <thead>
+        <tr>
+            <th>Company Name</th>
+            <th>Job Title</th>
+            <th>Location</th>
+            <th>Remote</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for posting in postings %}
+        <tr>
+            <td>{{ posting.company_name }}</td>
+            <td>{{ posting.job_title }}</td>
+            <td>{{ posting.location }}</td>
+            <td>{{ posting.is_remote|yesno:"Yes,No" }}</td>
+            <td>
+                <a href="{% url 'view_posting' posting.pk %}">View</a> |
+                <a href="{% url 'edit_posting' posting.pk %}">Edit</a> |
+                <a href="{% url 'delete_posting' posting.pk %}" onclick="return confirm('Are you sure you want to delete this posting?');">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>

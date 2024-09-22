@@ -6,6 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Marker Cluster -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster-src.js"></script>
+
     <style>
         #map {
             height: 600px;
@@ -14,29 +20,38 @@
 </head>
 <body>
     <h2>Job Postings Map</h2>
+
+    <!-- Back to Dashboard button -->
     <a href="{% url 'dashboard' %}" class="button">Back to Dashboard</a>
+
     <div id="map"></div>
 
-    <script type="text/javascript">
-        var map = L.map('map').setView([49.8951, -97.1384], 10);  // Default to Winnipeg
+    <script>
+        var map = L.map('map').setView([49.8951, -97.1384], 10);  // Default view on Winnipeg
 
-        // Add monochrome tile layer (from CartoDB)
+        // Add monochrome tile layer
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://carto.com/attributions">CartoDB</a>'
         }).addTo(map);
+
+        // Create a marker cluster group
+        var markers = L.markerClusterGroup();
 
         // Add pins for each job posting
         var postings = {{ job_postings_json|safe }};
         console.log(postings); // To verify the data
         postings.forEach(function(posting) {
-            console.log("Processing posting:", posting); // Log each posting being processed
             if (posting.fields.latitude && posting.fields.longitude) {
-                console.log([posting.fields.latitude, posting.fields.longitude]); // Log the coordinates
-                L.marker([posting.fields.latitude, posting.fields.longitude])
-                    .addTo(map)
-                    .bindPopup(`<b>${posting.fields.company_name}</b><br>${posting.fields.address}`);
+                var marker = L.marker([posting.fields.latitude, posting.fields.longitude])
+                    .bindPopup(`<b>${posting.fields.company_name}</b><br>${posting.fields.location}`);
+                
+                // Add each marker to the marker cluster group
+                markers.addLayer(marker);
             }
         });
+
+        // Add the marker cluster group to the map
+        map.addLayer(markers);
     </script>
 </body>
 </html>

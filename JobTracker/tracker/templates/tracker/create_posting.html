@@ -1,29 +1,18 @@
-<h2>Create a Job Posting</h2>
+<h2>{% if is_editing %}Edit{% else %}Create{% endif %} Job Posting</h2>
 
-<!-- Display any messages (success or error) -->
-{% if messages %}
-  {% for message in messages %}
-    <div class="{% if message.tags %}{{ message.tags }}{% endif %}">
-      {{ message }}
-    </div>
-  {% endfor %}
+{% if error %}
+    <p style="color: red;">{{ error }}</p>
 {% endif %}
 
-<!-- Form for creating job posting -->
-<form method="post" enctype="multipart/form-data">
+<form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Submit</button>
+  <button type="submit">{% if is_editing %}Confirm Changes{% else %}Submit{% endif %}</button>
 </form>
-
-<!-- Back button -->
-<a href="{% url 'dashboard' %}" class="button">Back to Dashboard</a>
-
-<!-- Display created job posting if applicable -->
-{% if object %}
-  <h3>Job Posting Created</h3>
-  <p><strong>Company Name:</strong> {{ object.company_name }}</p>
-  <p><strong>Address:</strong> {{ object.address }}</p>
-  <p><strong>Latitude:</strong> {{ object.latitude }}</p>
-  <p><strong>Longitude:</strong> {{ object.longitude }}</p>
+<!-- Upon clicking cancel, go back to view  -->
+{% if is_editing %}
+<a href="{% url 'view_posting' posting.pk %}" class="button">Cancel</a>  <!-- Go back to view posting -->
+{% else %}
+<a href="{% url 'dashboard' %}" class="button">Cancel</a>  <!-- Go back to dashboard if creating a new posting -->
 {% endif %}
+<a href="{% url 'dashboard' %}" class="button">Back to Dashboard</a>

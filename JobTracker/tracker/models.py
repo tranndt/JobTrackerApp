@@ -20,18 +20,28 @@ class JobApplication(models.Model):
         return f'{self.position} at {self.company_name}'
 
 from geopy.geocoders import Nominatim
+from django.utils import timezone
 
 class JobPosting(models.Model):
-    company_name = models.CharField(max_length=255)
-    address = models.CharField(max_length=255)
+    company_name = models.CharField(max_length=255, blank="Untitled Company")
+    job_title = models.CharField(max_length=255, blank="Untitled Job")  # New field
+    posting_url = models.URLField(max_length=500, blank="None")  # New field for job posting URL
+    location = models.CharField(max_length=255, blank="Unspecified")  # Changed from address to location
+    is_remote = models.BooleanField(default=False)  # New field for remote work
+    description = models.TextField(blank="No description provided")
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
+    date_created = models.DateTimeField(default=timezone.now)  # Auto-generated field
 
     def save(self, *args, **kwargs):
+        # Geocode location into latitude and longitude
         if not self.latitude or not self.longitude:
             geolocator = Nominatim(user_agent="job_tracker_app")
-            location = geolocator.geocode(self.address)
+            location = geolocator.geocode(self.location)
             if location:
                 self.latitude = location.latitude
                 self.longitude = location.longitude
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.company_name} - {self.job_title}"
