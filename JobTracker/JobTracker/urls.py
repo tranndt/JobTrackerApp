@@ -20,7 +20,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('tracker/', include('tracker.urls')),
+    path('', include('tracker.urls')),
         # path('', views.dashboard, name='home'),  # Root URL pointing to dashboard view
 
 ]

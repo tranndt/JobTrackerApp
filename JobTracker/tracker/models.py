@@ -18,3 +18,20 @@ class JobApplication(models.Model):
     
     def __str__(self):
         return f'{self.position} at {self.company_name}'
+
+from geopy.geocoders import Nominatim
+
+class JobPosting(models.Model):
+    company_name = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.latitude or not self.longitude:
+            geolocator = Nominatim(user_agent="job_tracker_app")
+            location = geolocator.geocode(self.address)
+            if location:
+                self.latitude = location.latitude
+                self.longitude = location.longitude
+        super().save(*args, **kwargs)
