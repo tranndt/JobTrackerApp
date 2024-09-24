@@ -21,3 +21,8 @@
 #4:
 - Webdriver fetching capability. Can now fetch Indeed postings 
 - Map in job view
+
+#5:
+- Base HTML
+- Upload Document view
+- All Documents view

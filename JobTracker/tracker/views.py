@@ -108,3 +108,45 @@ def import_from_url_view(request):
             return JsonResponse(job_data)
     else:
         return render(request, 'tracker/import_from_url_view.html')
+    
+from .forms import DocumentUploadForm
+
+def upload_files(request):
+    if request.method == 'POST':
+        form = DocumentUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Ensure either file or text_content is provided
+            if not form.cleaned_data['file'] and not form.cleaned_data['text_content']:
+                messages.error(request, 'Please provide either a file or text content.')
+            else:
+                form.save()
+                messages.success(request, 'Document uploaded successfully!')
+                return redirect('upload_files')
+        else:
+            messages.error(request, 'Failed to upload document. Please check the form for errors.')
+    else:
+        form = DocumentUploadForm()
+
+    return render(request, 'tracker/upload_files.html', {'form': form})
+
+from .models import Document
+
+def view_all_documents(request):
+    # Query documents by type
+    resumes = Document.objects.filter(document_type='Resume')
+    cover_letters = Document.objects.filter(document_type='Cover Letter')
+    others = Document.objects.filter(document_type='Other')
+
+    # Render the template with grouped documents
+    return render(request, 'tracker/view_all_documents.html', {
+        'resumes': resumes,
+        'cover_letters': cover_letters,
+        'others': others,
+    })
+
+def view_document(request, document_id):
+    # Retrieve the specific document by ID
+    document = get_object_or_404(Document, id=document_id)
+    
+    # Render the document details
+    return render(request, 'tracker/view_document.html', {'document': document})

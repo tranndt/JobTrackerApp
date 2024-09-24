@@ -45,3 +45,24 @@ class JobPosting(models.Model):
 
     def __str__(self):
         return f"{self.company_name} - {self.job_title}"
+    
+
+
+
+
+class Document(models.Model):
+    # Define choices for document types
+    DOCUMENT_TYPE_CHOICES = [
+        ('resume', 'Resume'),
+        ('cover_letter', 'Cover Letter'),
+        ('other', 'Other'),
+    ]
+    
+    document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPE_CHOICES)
+    file = models.FileField(upload_to='documents/', blank=True, null=True)
+    text_content = models.TextField(blank=True, null=True)
+    date_uploaded = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.get_document_type_display()} uploaded on {self.date_uploaded.strftime('%Y-%m-%d %H:%M:%S')}"
+

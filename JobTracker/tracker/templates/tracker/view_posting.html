@@ -1,3 +1,6 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,9 +33,6 @@
 
     <div id="map"></div>
 
-    <a href="{% url 'edit_posting' posting.pk %}" class="button">Edit</a>
-    <a href="{% url 'dashboard' %}" class="button">Back to Dashboard</a>
-
     <!-- Include Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <!-- Include Leaflet MarkerCluster JavaScript -->
@@ -57,5 +57,8 @@
         // Add the marker to the map
         marker.addTo(map);
     </script>
+    <a href="{% url 'edit_posting' posting.pk %}" class="button">Edit Posting</a>
+
 </body>
 </html>
+{% endblock %}

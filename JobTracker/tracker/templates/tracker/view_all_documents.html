@@ -1,0 +1,53 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<h2>View All Documents</h2>
+
+<!-- Resumes Section -->
+<div class="document-section">
+    <h3>Resumes</h3>
+    {% if resumes %}
+        <ul>
+            {% for document in resumes %}
+                <li>
+                    <a href="{% url 'view_document' document.id %}">{{ document.document_name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No resumes available.</p>
+    {% endif %}
+</div>
+
+<!-- Cover Letters Section -->
+<div class="document-section">
+    <h3>Cover Letters</h3>
+    {% if cover_letters %}
+        <ul>
+            {% for document in cover_letters %}
+                <li>
+                    <a href="{% url 'view_document' document.id %}">{{ document.document_name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No cover letters available.</p>
+    {% endif %}
+</div>
+
+<!-- Other Documents Section -->
+<div class="document-section">
+    <h3>Other Documents</h3>
+    {% if others %}
+        <ul>
+            {% for document in others %}
+                <li>
+                    <a href="{% url 'view_document' document.id %}">{{ document.document_name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No other documents available.</p>
+    {% endif %}
+</div>
+{% endblock %}

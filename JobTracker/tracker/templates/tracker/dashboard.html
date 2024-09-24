@@ -1,7 +1,9 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
 <h2>Job Postings Dashboard</h2>
 
 <!-- Button to view the map -->
-<a href="{% url 'map_view' %}" class="button">View Map</a>
 <a href="{% url 'create_posting' %}" class="button">Create New Posting</a>
 
 <!-- Job posting list -->
@@ -31,3 +33,5 @@
         {% endfor %}
     </tbody>
 </table>
+    
+{% endblock %}

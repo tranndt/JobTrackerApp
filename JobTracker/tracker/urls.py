@@ -11,4 +11,7 @@ urlpatterns = [
     path('edit/<int:pk>/', views.create_posting, name='edit_posting'),  # New edit route
     path('map/', views.map_view, name='map_view'),
     path('import-from-url/', views.import_from_url_view, name='import_from_url'),
+    path('upload-files/', views.upload_files, name='upload_files'),
+    path('documents/', views.view_all_documents, name='view_all_documents'),
+    path('documents/<int:document_id>/', views.view_document, name='view_document'),
 ]
