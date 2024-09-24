@@ -16,5 +16,8 @@
 #3:
 - Import functionality
     - Can import title, company, location, description from LinkedIn url 
+- Forwarded to a port
 
 #4:
+- Webdriver fetching capability. Can now fetch Indeed postings 
+- Map in job view

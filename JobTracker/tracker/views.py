@@ -106,3 +106,5 @@ def import_from_url_view(request):
             return JsonResponse({'error': job_data}, status=400)
         else:
             return JsonResponse(job_data)
+    else:
+        return render(request, 'tracker/import_from_url_view.html')
