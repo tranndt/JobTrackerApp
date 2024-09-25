@@ -21,7 +21,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('tracker.urls')),
-        # path('', views.dashboard, name='home'),  # Root URL pointing to dashboard view
+        # path('', views.all_jobs, name='home'),  # Root URL pointing to all_jobs view
 
 ]
 

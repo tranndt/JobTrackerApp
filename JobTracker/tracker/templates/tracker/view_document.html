@@ -18,11 +18,12 @@
 {% endif %}
 
 <a href="{% url 'edit_document' document.id %}" class="btn btn-primary">Edit</a>
-<form action="{% url 'delete_document' document.id %}" method="post" style="display:inline;">
+<!-- <form action="{% url 'delete_document' document.id %}" method="post" style="display:inline;">
     {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Delete</button>
-</form>
-<a href="{% url 'view_all_documents' %}" class="btn btn-secondary">Back to All Documents</a>
+    <button onclick="return confirm('Are you sure you want to delete this document?');" type="submit" class="btn btn-danger">Delete</button>
+</form> -->
+<a href = "{% url 'delete_document' document.id %}" class="btn btn-danger">Delete</a>
+<a href="{% url 'view_all_documents' %}" class="btn btn-secondary">Back to My Documents</a>
 
 <!-- Back button to go back to the document list -->
 {% endblock %}

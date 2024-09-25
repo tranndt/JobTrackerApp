@@ -14,15 +14,15 @@
         <button type="button" id="importFromUrlButton">Import from URL</button>
     </div>
 
-    <button type="submit">{% if is_editing %}Confirm Changes{% else %}Submit{% endif %}</button>
+    <button class="btn btn-primary" type="submit">{% if is_editing %}Confirm Changes{% else %}Submit{% endif %}</button>
 </form>
 <!-- Upon clicking cancel, go back to view  -->
 {% if is_editing %}
-<a href="{% url 'view_posting' posting.pk %}" class="button">Cancel</a>  <!-- Go back to view posting -->
+<a href="{% url 'view_job' posting.pk %}" class="btn btn-danger">Cancel</a>  <!-- Go back to view posting -->
 {% else %}
-<a href="{% url 'dashboard' %}" class="button">Cancel</a>  <!-- Go back to dashboard if creating a new posting -->
+<a href="{% url 'all_jobs' %}" class="btn btn-danger">Cancel</a>  <!-- Go back to all_jobs if creating a new posting -->
 {% endif %}
-<a href="{% url 'dashboard' %}" class="button">Back to Dashboard</a>
+<a href="{% url 'all_jobs' %}" class="btn btn-secondary">Back to My Jobs</a>
 
 <!-- Include jQuery to make AJAX requests -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

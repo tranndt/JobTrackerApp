@@ -7,90 +7,116 @@ from geopy.geocoders import Nominatim
 from django.contrib import messages
 from geopy.exc import GeocoderServiceError
 
-def create_posting(request, pk=None):
-    if pk:
-        # Editing an existing posting
-        posting = get_object_or_404(JobPosting, pk=pk)
-        if request.method == 'POST':
-            form = JobPostingForm(request.POST, instance=posting)
-            if form.is_valid():
-                # Validate location before saving
-                if not form.cleaned_data['is_remote']:
-                    geolocator = Nominatim(user_agent="job_tracker_app")
-                    try:
-                        location = geolocator.geocode(form.cleaned_data['location'])
-                        if location:
-                            form.save()
-                            return redirect('dashboard')
-                        else:
-                            return render(request, 'tracker/create_posting.html', {
-                                'form': form,
-                                'error': 'Invalid location. Please enter a valid address.'
-                            })
-                    except GeocoderServiceError:
-                        return render(request, 'tracker/create_posting.html', {
-                            'form': form,
-                            'error': 'Geocoding service failed. Please try again.'
-                        })
-                else:
-                    form.save()  # Save without geocoding for remote jobs
-                    return redirect('dashboard')
-        else:
-            form = JobPostingForm(instance=posting)
+# def create_job(request, pk=None):
+#     if pk:
+#         # Editing an existing posting
+#         posting = get_object_or_404(JobPosting, pk=pk)
+#         if request.method == 'POST':
+#             form = JobPostingForm(request.POST, instance=posting)
+#             if form.is_valid():
+#                 # Validate location before saving
+#                 if not form.cleaned_data['is_remote']:
+#                     geolocator = Nominatim(user_agent="job_tracker_app")
+#                     try:
+#                         location = geolocator.geocode(form.cleaned_data['location'])
+#                         if location:
+#                             form.save()
+#                             return redirect('all_jobs')
+#                         else:
+#                             return render(request, 'tracker/create_job.html', {
+#                                 'form': form,
+#                                 'error': 'Invalid location. Please enter a valid address.'
+#                             })
+#                     except GeocoderServiceError:
+#                         return render(request, 'tracker/create_job.html', {
+#                             'form': form,
+#                             'error': 'Geocoding service failed. Please try again.'
+#                         })
+#                 else:
+#                     form.save()  # Save without geocoding for remote jobs
+#                     return redirect('all_jobs')
+#         else:
+#             form = JobPostingForm(instance=posting)
+#     else:
+#         # Creating a new posting
+#         posting = None
+#         if request.method == 'POST':
+#             form = JobPostingForm(request.POST)
+#             if form.is_valid():
+#                 if not form.cleaned_data['is_remote']:
+#                     geolocator = Nominatim(user_agent="job_tracker_app")
+#                     try:
+#                         location = geolocator.geocode(form.cleaned_data['location'])
+#                         if location:
+#                             form.save()
+#                             return redirect('all_jobs')
+#                         else:
+#                             return render(request, 'tracker/create_job.html', {
+#                                 'form': form,
+#                                 'error': 'Invalid location. Please enter a valid address.'
+#                             })
+#                     except GeocoderServiceError:
+#                         return render(request, 'tracker/create_job.html', {
+#                             'form': form,
+#                             'error': 'Geocoding service failed. Please try again.'
+#                         })
+#                 else:
+#                     form.save()  # Save without geocoding for remote jobs
+#                     return redirect('all_jobs')
+#         else:
+#             form = JobPostingForm()
+
+#     return render(request, 'tracker/create_job.html', {
+#         'form': form,
+#         'is_editing': pk is not None,
+#         'posting': posting
+#     })
+
+def create_job(request):
+    if request.method == 'POST':
+        form = JobPostingForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Document {form.cleaned_data["document_name"]} uploaded successfully.')
+            return redirect('create_document')
+
     else:
-        # Creating a new posting
-        posting = None
-        if request.method == 'POST':
-            form = JobPostingForm(request.POST)
-            if form.is_valid():
-                if not form.cleaned_data['is_remote']:
-                    geolocator = Nominatim(user_agent="job_tracker_app")
-                    try:
-                        location = geolocator.geocode(form.cleaned_data['location'])
-                        if location:
-                            form.save()
-                            return redirect('dashboard')
-                        else:
-                            return render(request, 'tracker/create_posting.html', {
-                                'form': form,
-                                'error': 'Invalid location. Please enter a valid address.'
-                            })
-                    except GeocoderServiceError:
-                        return render(request, 'tracker/create_posting.html', {
-                            'form': form,
-                            'error': 'Geocoding service failed. Please try again.'
-                        })
-                else:
-                    form.save()  # Save without geocoding for remote jobs
-                    return redirect('dashboard')
-        else:
-            form = JobPostingForm()
+        form = JobPostingForm()
 
-    return render(request, 'tracker/create_posting.html', {
-        'form': form,
-        'is_editing': pk is not None,
-        'posting': posting
-    })
+    return render(request, 'tracker/create_job.html', {'form': form})
 
-def dashboard(request):
-    postings = JobPosting.objects.all()
-    return render(request, 'tracker/dashboard.html', {'postings': postings})
+def edit_job(request, job_id):
+    job = get_object_or_404(JobPosting, pk=job_id)
+    if request.method == 'POST':
+        form = JobPostingForm(request.POST, instance=job)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Job posting updated successfully!')
+            return redirect('all_jobs')
+    else:
+        form = JobPostingForm(instance=job)
+    return render(request, 'tracker/edit_job.html', {'form': form, 'job': job})
+
+
+def all_jobs(request):
+    jobs = JobPosting.objects.all()
+    return render(request, 'tracker/all_jobs.html', {'jobs': jobs})
 
 def map_view(request):
     job_postings = JobPosting.objects.all()
     job_postings_json = serialize('json', job_postings)
     return render(request, 'tracker/map_view.html', {'job_postings_json': job_postings_json})
 
-def view_posting(request, pk):
-    posting = JobPosting.objects.get(pk=pk)
-    return render(request, 'tracker/view_posting.html', {'posting': posting})
+def view_job(request, job_id):
+    job = JobPosting.objects.get(pk=job_id)
+    return render(request, 'tracker/view_job.html', {'job': job})
 
 from django.shortcuts import get_object_or_404
 
-def delete_posting(request, pk):
-    job_posting = JobPosting.objects.get(pk=pk)
-    job_posting.delete()
-    return redirect('dashboard')
+def delete_job(request, job_id):
+    job = JobPosting.objects.get(pk=job_id)
+    job.delete()
+    return redirect('all_jobs')
 
 from django.http import JsonResponse
 from .functions import import_from_url
@@ -111,7 +137,7 @@ def import_from_url_view(request):
     
 from .forms import DocumentUploadForm
 
-def upload_files(request):
+def create_document(request):
     if request.method == 'POST':
         form = DocumentUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -121,13 +147,14 @@ def upload_files(request):
             else:
                 form.save()
                 messages.success(request, f'Document {form.cleaned_data["document_name"]} uploaded successfully.')
-                return redirect('upload_files')
+                return redirect('create_document')
         else:
             messages.error(request, 'Failed to upload document. Please check the form for errors.')
     else:
         form = DocumentUploadForm()
 
-    return render(request, 'tracker/upload_files.html', {'form': form})
+    return render(request, 'tracker/create_document.html', {'form': form})
+
 
 from .models import Document
 

@@ -1,0 +1,23 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<h2>Create Job</h2>
+
+<form method="post" enctype="multipart/form-data" id="uploadForm">
+    {% csrf_token %}
+    <!-- {{ form.as_p }} -->
+    <!-- Iterate through form fields -->
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a href="{% url 'all_jobs' %}" class="btn btn-seconadry">Cancel</a>  <!-- Go back to all_jobs if creating a new posting -->
+</form>
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% endblock %}

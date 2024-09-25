@@ -10,7 +10,15 @@ class JobApplicationForm(forms.ModelForm):
 class JobPostingForm(forms.ModelForm):
     class Meta:
         model = JobPosting
-        fields = ['company_name', 'job_title', 'posting_url', 'location', 'is_remote', 'description']  # Include 'is_remote'
+        fields = ['posting_url', 'job_title','company_name', 'location', 'is_remote', 'description']  # Include 'is_remote'
+        widgets = {
+            'posting_url': forms.URLInput(attrs={'class': 'form-control', 'autocomplete': 'off'}),
+            'company_name': forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off'}),
+            'job_title': forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off'}),
+            'location': forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off'}),
+            # 'is_remote': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 8, 'autocomplete': 'off'}),
+        }
 
 from .models import Document
 

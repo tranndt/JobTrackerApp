@@ -3,12 +3,12 @@
 {% block content %}
 <h2>Delete Document</h2>
 
-<p>Are you sure you want to delete the document "{{ document.document_name }}"?</p>
+<p>Are you sure you want to delete the document <span style="color:red">{{ document.document_name }}</span>?</p>
 
 <form method="post">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger">Delete</button>
-    <a href="{% url 'view_all_documents' %}" class="btn btn-secondary">Cancel</a>
+    <a href="{% url 'view_document' document.id %}" class="btn btn-secondary">Cancel</a>
 </form>
 
 {% endblock %}
