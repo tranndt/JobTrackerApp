@@ -3,7 +3,7 @@
 {% block content %}
 <h2>{% if is_editing %}Edit{% else %}Create{% endif %} Job Posting</h2>
 
-<form method="post" id="jobPostingForm">
+<form method="post" enctype="multipart/form-data" id="jobPostingForm">
     {% csrf_token %}
     {{ form.as_p }}
 

@@ -1,10 +1,13 @@
 {% extends 'tracker/base.html' %}
 
 {% block content %}
-{% load custom_filters %}
-<h2>{{ document.document_name }}</h2>
-<p><strong>Document Name:</strong> {{ document.document_name }}</p>
-<p><strong>File Url:</strong> <a href="{{ document.file.url }}">{{ document.file.url }}</a></p>
+<h2>View Document</h2>
+<p><strong>Document Name: </strong><span style="color:red">{{ document.document_name }}</span></p>
+{% if document.file %}
+    <p><strong>File Url:</strong> <a href="{{ document.file.url }}">{{ document.file.url }}</a></p>
+{% else %}
+    <p><strong>File Url: </strong><span style="color: grey;">No file available.</span> </p>
+{% endif %}
 <p><strong>Type:</strong> {{ document.document_type }}</p>
 <p><strong>Created:</strong> {{ document.date_uploaded }}</p>
 
@@ -14,9 +17,12 @@
     <pre>{{ document.text_content }}</pre>
 {% endif %}
 
-<div>
-    <a href="{% url 'view_all_documents' %}" class="btn btn-secondary mt-3">Back to All Documents</a>
-</div>
+<a href="{% url 'edit_document' document.id %}" class="btn btn-primary">Edit</a>
+<form action="{% url 'delete_document' document.id %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+<a href="{% url 'view_all_documents' %}" class="btn btn-secondary">Back to All Documents</a>
 
 <!-- Back button to go back to the document list -->
 {% endblock %}

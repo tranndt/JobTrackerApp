@@ -4,14 +4,14 @@
 <h2>My Jobs</h2>
 
 <!-- Button to view the map -->
-<a href="{% url 'create_posting' %}" class="button">Create New Posting</a>
+<a href="{% url 'create_posting' %}" class="btn btn-primary">New Posting</a>
 
 <!-- Job posting list -->
 <table>
     <thead>
         <tr>
-            <th>Company Name</th>
             <th>Job Title</th>
+            <th>Company Name</th>
             <th>Location</th>
             <th>Remote</th>
             <th>Actions</th>
@@ -20,8 +20,8 @@
     <tbody>
         {% for posting in postings %}
         <tr>
-            <td>{{ posting.company_name }}</td>
             <td>{{ posting.job_title }}</td>
+            <td>{{ posting.company_name }}</td>
             <td>{{ posting.location }}</td>
             <td>{{ posting.is_remote|yesno:"Yes,No" }}</td>
             <td>

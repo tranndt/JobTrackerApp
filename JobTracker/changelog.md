@@ -32,3 +32,6 @@
 
 #6.2: 
 - Document name autofill
+
+#6.3:
+- Edit and Delete Document functionality

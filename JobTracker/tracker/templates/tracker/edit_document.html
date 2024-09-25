@@ -1,0 +1,22 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<h2>Edit Document</h2>
+
+<form method="post" enctype="multipart/form-data" id="uploadForm">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+<script>
+    document.getElementById('uploadForm').addEventListener('change', function(event) {
+        var fileInput = event.target;
+        var fileName = fileInput.files[0].name;
+        var nameField = document.getElementById('id_document_name');
+        nameField.value = fileName;
+        nameField.readOnly = false;  // Allow user to edit the field if necessary
+    });
+</script>
+
+{% endblock %}

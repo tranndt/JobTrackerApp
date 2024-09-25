@@ -2,7 +2,7 @@
 
 {% block content %}
 <h2>My Documents</h2>
-<a href="{% url 'upload_files' %}">Create New Document</a>
+<a href="{% url 'upload_files' %}" class="btn btn-primary">New Document</a>
 
 <!-- Resumes Section -->
 <div class="document-section">
@@ -19,12 +19,13 @@
             <td style="font-style: italic;">{{ document.document_name }}</td>
             <td>{{ document.date_uploaded }}</td>
             <td>
-                <a href="{% url 'view_document' document.id %}">View</a>
+                <a href="{% url 'view_document' document.id %}">View</a> |
+                <a href="{% url 'edit_document' document.id %}">Edit</a> |
+                <a href="{% url 'delete_document' document.id %}">Delete</a>
             </td>
         </tr>
         {% endfor %}
     </table>
-
     {% else %}
         <p>No resumes available.</p>
     {% endif %}
@@ -45,7 +46,9 @@
             <td style="font-style: italic;">{{ document.document_name }}</td>
             <td>{{ document.date_uploaded }}</td>
             <td>
-                <a href="{% url 'view_document' document.id %}">View</a>
+                <a href="{% url 'view_document' document.id %}">View</a> |
+                <a href="{% url 'edit_document' document.id %}">Edit</a> |
+                <a href="{% url 'delete_document' document.id %}">Delete</a>
             </td>
         </tr>
         {% endfor %}
@@ -72,7 +75,9 @@
             <td style="font-style: italic;">{{ document.document_name }}</td>
             <td>{{ document.date_uploaded }}</td>
             <td>
-                <a href="{% url 'view_document' document.id %}">View</a>
+                <a href="{% url 'view_document' document.id %}">View</a> |
+                <a href="{% url 'edit_document' document.id %}">Edit</a> |
+                <a href="{% url 'delete_document' document.id %}">Delete</a>
             </td>
         </tr>
         {% endfor %}

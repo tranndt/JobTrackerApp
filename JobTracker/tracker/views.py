@@ -150,3 +150,24 @@ def view_document(request, document_id):
     
     # Render the document details
     return render(request, 'tracker/view_document.html', {'document': document})
+
+
+def edit_document(request, document_id):
+    document = get_object_or_404(Document, id=document_id)
+    if request.method == 'POST':
+        form = DocumentUploadForm(request.POST, request.FILES, instance=document)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Document updated successfully!')
+            return redirect('view_all_documents')
+    else:
+        form = DocumentUploadForm(instance=document)
+    return render(request, 'tracker/edit_document.html', {'form': form, 'document': document})
+
+def delete_document(request, document_id):
+    document = get_object_or_404(Document, id=document_id)
+    if request.method == 'POST':
+        document.delete()
+        messages.success(request, 'Document deleted successfully!')
+        return redirect('view_all_documents')
+    return render(request, 'tracker/delete_document.html', {'document': document})
