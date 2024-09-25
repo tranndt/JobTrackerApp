@@ -26,3 +26,6 @@
 - Base HTML
 - Upload Document view
 - All Documents view
+
+#6:
+- Site Refactoring (Tab names and URL)

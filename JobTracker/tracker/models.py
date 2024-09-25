@@ -59,10 +59,16 @@ class Document(models.Model):
     ]
     
     document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPE_CHOICES)
+    document_name = models.CharField(max_length=255, blank="Untitled Document", null=True)
     file = models.FileField(upload_to='documents/', blank=True, null=True)
     text_content = models.TextField(blank=True, null=True)
     date_uploaded = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.get_document_type_display()} uploaded on {self.date_uploaded.strftime('%Y-%m-%d %H:%M:%S')}"
+    
+    def save(self, *args, **kwargs):
+        if self.file and self.document_name == "Untitled Document":
+            self.document_name = str(self.file)
+        super().save(*args, **kwargs)
 

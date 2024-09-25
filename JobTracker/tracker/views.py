@@ -133,9 +133,9 @@ from .models import Document
 
 def view_all_documents(request):
     # Query documents by type
-    resumes = Document.objects.filter(document_type='Resume')
-    cover_letters = Document.objects.filter(document_type='Cover Letter')
-    others = Document.objects.filter(document_type='Other')
+    resumes = Document.objects.filter(document_type='resume')
+    cover_letters = Document.objects.filter(document_type='cover_letter')
+    others = Document.objects.filter(document_type='other')
 
     # Render the template with grouped documents
     return render(request, 'tracker/view_all_documents.html', {

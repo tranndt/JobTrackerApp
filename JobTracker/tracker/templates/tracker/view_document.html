@@ -1,23 +1,22 @@
 {% extends 'tracker/base.html' %}
 
 {% block content %}
+{% load custom_filters %}
 <h2>{{ document.document_name }}</h2>
-
+<p><strong>Document Name:</strong> {{ document.document_name }}</p>
+<p><strong>File Url:</strong> <a href="{{ document.file.url }}">{{ document.file.url }}</a></p>
 <p><strong>Type:</strong> {{ document.document_type }}</p>
-<p><strong>Uploaded On:</strong> {{ document.date_uploaded }}</p>
+<p><strong>Created:</strong> {{ document.date_uploaded }}</p>
 
 <!-- Display text content if available -->
+<p><strong>Content:</strong></p>
 {% if document.text_content %}
-    <h3>Content</h3>
     <pre>{{ document.text_content }}</pre>
 {% endif %}
 
-<!-- Provide a download link if a file is uploaded -->
-{% if document.file %}
-    <h3>Download File</h3>
-    <a href="{{ document.file.url }}" download>Download {{ document.document_name }}</a>
-{% endif %}
+<div>
+    <a href="{% url 'view_all_documents' %}" class="btn btn-secondary mt-3">Back to All Documents</a>
+</div>
 
 <!-- Back button to go back to the document list -->
-<a href="{% url 'view_all_documents' %}" class="btn btn-secondary mt-3">Back to All Documents</a>
 {% endblock %}

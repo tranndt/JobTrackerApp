@@ -17,8 +17,9 @@ from .models import Document
 class DocumentUploadForm(forms.ModelForm):
     class Meta:
         model = Document
-        fields = ['document_type', 'file', 'text_content']
+        fields = ['document_name', 'document_type', 'file', 'text_content']
         widgets = {
+            'document_name': forms.TextInput(attrs={'class': 'form-control'}),
             'document_type': forms.Select(attrs={'class': 'form-control'}),
             'file': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'text_content': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
