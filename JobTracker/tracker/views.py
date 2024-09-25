@@ -7,6 +7,8 @@ from geopy.geocoders import Nominatim
 from django.contrib import messages
 from geopy.exc import GeocoderServiceError
 from django.views.decorators.csrf import csrf_exempt
+import os
+
 
 # def create_job(request, pk=None):
 #     if pk:
@@ -191,10 +193,23 @@ def edit_document(request, document_id):
         form = DocumentUploadForm(instance=document)
     return render(request, 'tracker/edit_document.html', {'form': form, 'document': document})
 
+
 def delete_document(request, document_id):
     document = get_object_or_404(Document, id=document_id)
+    
     if request.method == 'POST':
+        # Get the file path
+        if document.file:
+            file_path = document.file.path
+            
+            # Delete the file from the filesystem
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        
+        # Delete the document entry from the database
         document.delete()
-        messages.success(request, 'Document deleted successfully!')
+        
+        # Redirect to a success page or another appropriate view
         return redirect('view_all_documents')
+    
     return render(request, 'tracker/delete_document.html', {'document': document})

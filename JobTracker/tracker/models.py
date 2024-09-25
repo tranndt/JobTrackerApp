@@ -48,9 +48,6 @@ class JobPosting(models.Model):
         return f"{self.company_name} - {self.job_title}"
     
 
-
-
-
 class Document(models.Model):
     # Define choices for document types
     DOCUMENT_TYPE_CHOICES = [
@@ -71,5 +68,6 @@ class Document(models.Model):
     def save(self, *args, **kwargs):
         if self.file and not self.document_name:
             self.document_name =  os.path.basename(self.file.url)
+        self.file.name = f'{self.document_type}_{self.date_uploaded.strftime("%Y%m%d%H%M%S")}_{self.file.name}'
         super().save(*args, **kwargs)
 

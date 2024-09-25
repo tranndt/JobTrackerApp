@@ -35,3 +35,10 @@
 
 #6.3:
 - Edit and Delete Document functionality
+
+#6.4:
+- Delete Job View
+- Import from URL
+
+#6.5:
+- Delete Document entry on DB also delete locally

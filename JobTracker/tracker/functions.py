@@ -101,13 +101,15 @@ def parse_job_posting_linkedin(html:str):
     company_selector = "div.sub-nav-cta__sub-text-container > a"
     loaction_selector = "div.sub-nav-cta__sub-text-container > span"
     job_title_selector = "div.sub-nav-cta__text-container > h3.sub-nav-cta__header"
-    job_description_selector = "div.description__text > section > div"
+    # job_description_selector = "div.description__text > section > div"
+    job_description_selector = "div#job-details"
 
     company = soup.select(company_selector)[0].text.strip()
     location = soup.select(loaction_selector)[0].text.strip()
     job_title = soup.select(job_title_selector)[0].text.strip()
-    job_description = "\n".join([child.text for child in soup.select(job_description_selector)[0].children])
-    job_description = re.sub(r"\n+", "\n", job_description).strip()
+    # job_description = "\n".join([child.text for child in soup.select(job_description_selector)[0].children])
+    # job_description = re.sub(r"\n+", "\n", job_description).strip()
+    job_description = soup.select(job_description_selector)[0].prettify()
 
     job_posting_data = {
         "job_title": job_title,

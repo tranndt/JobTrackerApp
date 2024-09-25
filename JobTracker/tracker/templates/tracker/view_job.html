@@ -26,7 +26,7 @@
     <p><strong>Location:</strong> {{ job.location }}</p>
     <p><strong>Date Created:</strong> {{ job.date_created }}</p>
     <p><strong>Posting URL:</strong> <a href="{{ job.posting_url }}" target="_blank">{{ job.posting_url|slice:":50" }}...{{ job.posting_url|slice:"-50:" }}</a></p>    <p><strong>Job Description:</strong></p>
-    <pre>{{ job.description }}</pre>
+    <div>{{ job.description|safe }}</div>
 
     <!-- Map container -->
     <div class="map-container">
