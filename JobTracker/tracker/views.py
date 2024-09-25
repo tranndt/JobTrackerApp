@@ -1,11 +1,12 @@
 # tracker/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import JobApplicationForm, JobPostingForm
-from .models import JobApplication, JobPosting
+from .models import JobApplication, JobPosting, Document
 from django.core.serializers import serialize
 from geopy.geocoders import Nominatim
 from django.contrib import messages
 from geopy.exc import GeocoderServiceError
+from django.views.decorators.csrf import csrf_exempt
 
 # def create_job(request, pk=None):
 #     if pk:
@@ -77,9 +78,7 @@ def create_job(request):
         form = JobPostingForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, f'Document {form.cleaned_data["document_name"]} uploaded successfully.')
-            return redirect('create_document')
-
+            return redirect('all_jobs')
     else:
         form = JobPostingForm()
 
@@ -114,9 +113,12 @@ def view_job(request, job_id):
 from django.shortcuts import get_object_or_404
 
 def delete_job(request, job_id):
-    job = JobPosting.objects.get(pk=job_id)
-    job.delete()
-    return redirect('all_jobs')
+    job = get_object_or_404(JobPosting, id=job_id)
+    if request.method == 'POST':
+        job.delete()
+        # messages.success(request, 'Job deleted successfully!')
+        return redirect('all_jobs')
+    return render(request, 'tracker/delete_job.html', {'job': job})
 
 from django.http import JsonResponse
 from .functions import import_from_url
@@ -155,8 +157,6 @@ def create_document(request):
 
     return render(request, 'tracker/create_document.html', {'form': form})
 
-
-from .models import Document
 
 def view_all_documents(request):
     # Query documents by type

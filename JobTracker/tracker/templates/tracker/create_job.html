@@ -5,12 +5,70 @@
 
 <form method="post" enctype="multipart/form-data" id="uploadForm">
     {% csrf_token %}
-    <!-- {{ form.as_p }} -->
-    <!-- Iterate through form fields -->
-    
+    <!-- Iterate through form fields --> 
+    <div class="form-group">
+        <strong>{{ form.posting_url.label_tag }}</strong>
+        {{ form.posting_url }}
+        <button type="button" class="btn btn-primary" id="importButton">Import from URL</button>
+    </div>
+    <div class="form-group">
+        <strong>{{ form.job_title.label_tag }}</strong>
+        {{ form.job_title }}
+    </div>
+    <div class="form-group">
+        <strong>{{ form.company_name.label_tag }}</strong>
+        {{ form.company_name }}
+    </div>
+    <div class="form-group">
+        <strong>{{ form.location.label_tag }}</strong>
+        {{ form.location }}
+    </div>
+    <div class="form-group">
+        <strong>{{ form.is_remote.label_tag }}</strong>
+        {{ form.is_remote }}
+    </div>
+    <div class="form-group">
+        <strong>{{ form.description.label_tag }}</strong>
+        {{ form.description }}
+    </div>   
     <button type="submit" class="btn btn-primary">Submit</button>
-    <a href="{% url 'all_jobs' %}" class="btn btn-seconadry">Cancel</a>  <!-- Go back to all_jobs if creating a new posting -->
+    <a href="{% url 'all_jobs' %}" class="btn btn-secondary">Cancel</a>  <!-- Go back to all_jobs if creating a new posting -->
 </form>
+
+<!-- Include jQuery to make AJAX requests -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Handle the import from URL button
+    $('#importButton').click(function() {
+        const url = $('#id_posting_url').val();
+        if (!url) {
+            alert("Please provide a posting URL");
+            return;
+        }
+        $.ajax({
+            url: "{% url 'import_from_url' %}",
+            method: "POST",
+            data: {
+                'url': url,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(data) {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    // Populate the form fields with the data from the URL
+                    $('#id_job_title').val(data.job_title);
+                    $('#id_company_name').val(data.company_name);
+                    $('#id_location').val(data.location);
+                    $('#id_description').val(data.description);
+                }
+            },
+            error: function() {
+                alert("An error occurred while trying to fetch the job posting.");
+            }
+        });
+    });
+</script>
 
 {% if messages %}
     <ul class="messages">
