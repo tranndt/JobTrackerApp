@@ -3,7 +3,7 @@
 {% block content %}
 <h2>Upload Document</h2>
 
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" id="uploadForm">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Submit</button>
@@ -16,5 +16,15 @@
         {% endfor %}
     </ul>
 {% endif %}
+
+<script>
+document.getElementById('uploadForm').addEventListener('change', function(event) {
+    var fileInput = event.target;
+    var fileName = fileInput.files[0].name;
+    var nameField = document.getElementById('id_document_name');
+    nameField.value = fileName;
+    nameField.readOnly = false;  // Allow user to edit the field if necessary
+});
+</script>
 
 {% endblock %}

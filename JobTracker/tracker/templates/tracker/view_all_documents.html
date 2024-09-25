@@ -60,14 +60,14 @@
 <!-- Other Documents Section -->
 <div class="document-section">
     <h3>Other Documents</h3>
-    {% if other_documents %}
+    {% if others %}
     <table>
         <tr>
             <th>File Name</th>
             <th>Created</th>
             <th>Actions</th>
         </tr>
-        {% for document in other_documents %}
+        {% for document in others %}
         <tr>
             <td style="font-style: italic;">{{ document.document_name }}</td>
             <td>{{ document.date_uploaded }}</td>

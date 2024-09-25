@@ -27,5 +27,8 @@
 - Upload Document view
 - All Documents view
 
-#6:
+#6.1:
 - Site Refactoring (Tab names and URL)
+
+#6.2: 
+- Document name autofill

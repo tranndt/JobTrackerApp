@@ -120,7 +120,7 @@ def upload_files(request):
                 messages.error(request, 'Please provide either a file or text content.')
             else:
                 form.save()
-                messages.success(request, 'Document uploaded successfully!')
+                messages.success(request, f'Document {form.cleaned_data["document_name"]} uploaded successfully.')
                 return redirect('upload_files')
         else:
             messages.error(request, 'Failed to upload document. Please check the form for errors.')

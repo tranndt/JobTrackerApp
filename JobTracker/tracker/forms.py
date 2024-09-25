@@ -22,5 +22,5 @@ class DocumentUploadForm(forms.ModelForm):
             'document_name': forms.TextInput(attrs={'class': 'form-control'}),
             'document_type': forms.Select(attrs={'class': 'form-control'}),
             'file': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-            'text_content': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'text_content': forms.Textarea(attrs={'class': 'form-control', 'rows': 8}),
         }
