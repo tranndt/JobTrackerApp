@@ -1,6 +1,6 @@
 # tracker/views.py
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import JobApplicationForm, JobPostingForm
+from .forms import JobApplicationForm, JobPostingForm, DocumentForm
 from .models import JobApplication, JobPosting, Document
 from django.core.serializers import serialize
 from geopy.geocoders import Nominatim
@@ -109,8 +109,22 @@ def map_view(request):
     return render(request, 'tracker/map_view.html', {'job_postings_json': job_postings_json})
 
 def view_job(request, job_id):
-    job = JobPosting.objects.get(pk=job_id)
-    return render(request, 'tracker/view_job.html', {'job': job})
+    job = get_object_or_404(JobPosting, id=job_id)
+    documents = Document.objects.all()
+    document_form = DocumentForm()
+
+    if request.method == 'POST':
+        document_form = DocumentForm(request.POST, request.FILES)
+        if document_form.is_valid():
+            document_form.save()
+            # Handle the rest of the application creation logic here
+
+    context = {
+        'job': job,
+        'documents': documents,
+        'document_form': document_form,
+    }
+    return render(request, 'tracker/view_job.html', context)
 
 from django.shortcuts import get_object_or_404
 
@@ -139,32 +153,32 @@ def import_from_url_view(request):
     else:
         return render(request, 'tracker/import_from_url_view.html')
     
-from .forms import DocumentUploadForm
+from .forms import DocumentForm
 
 def create_document(request):
     if request.method == 'POST':
-        form = DocumentUploadForm(request.POST, request.FILES)
+        form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
             # Ensure either file or text_content is provided
             if not form.cleaned_data['file'] and not form.cleaned_data['text_content']:
                 messages.error(request, 'Please provide either a file or text content.')
             else:
                 form.save()
-                messages.success(request, f'Document {form.cleaned_data["document_name"]} uploaded successfully.')
-                return redirect('create_document')
+                # messages.success(request, f'Document {form.cleaned_data["document_name"]} uploaded successfully.')
+                return redirect('view_all_documents')
         else:
             messages.error(request, 'Failed to upload document. Please check the form for errors.')
     else:
-        form = DocumentUploadForm()
+        form = DocumentForm()
 
     return render(request, 'tracker/create_document.html', {'form': form})
 
 
 def view_all_documents(request):
     # Query documents by type
-    resumes = Document.objects.filter(document_type='resume')
-    cover_letters = Document.objects.filter(document_type='cover_letter')
-    others = Document.objects.filter(document_type='other')
+    resumes = Document.objects.filter(document_type='resume').order_by('-date_uploaded')
+    cover_letters = Document.objects.filter(document_type='cover_letter').order_by('-date_uploaded')
+    others = Document.objects.filter(document_type='other').order_by('-date_uploaded')
 
     # Render the template with grouped documents
     return render(request, 'tracker/view_all_documents.html', {
@@ -184,13 +198,13 @@ def view_document(request, document_id):
 def edit_document(request, document_id):
     document = get_object_or_404(Document, id=document_id)
     if request.method == 'POST':
-        form = DocumentUploadForm(request.POST, request.FILES, instance=document)
+        form = DocumentForm(request.POST, request.FILES, instance=document)
         if form.is_valid():
             form.save()
             messages.success(request, 'Document updated successfully!')
             return redirect('view_all_documents')
     else:
-        form = DocumentUploadForm(instance=document)
+        form = DocumentForm(instance=document)
     return render(request, 'tracker/edit_document.html', {'form': form, 'document': document})
 
 
@@ -213,3 +227,38 @@ def delete_document(request, document_id):
         return redirect('view_all_documents')
     
     return render(request, 'tracker/delete_document.html', {'document': document})
+
+def create_application(request, job_id):
+    job_posting = get_object_or_404(JobPosting, id=job_id)
+    if request.method == 'POST':
+        job_application_form = JobApplicationForm(request.POST)
+        resume_form = DocumentForm(request.POST, request.FILES, prefix='resume')
+        cover_letter_form = DocumentForm(request.POST, request.FILES, prefix='cover_letter')
+        additional_documents_form = DocumentForm(request.POST, request.FILES, prefix='additional_documents')
+
+        if job_application_form.is_valid() and resume_form.is_valid() and cover_letter_form.is_valid() and additional_documents_form.is_valid():
+            resume = resume_form.save()
+            cover_letter = cover_letter_form.save()
+            additional_documents = additional_documents_form.save()
+
+            job_application = job_application_form.save(commit=False)
+            job_application.job_posting = job_posting
+            job_application.resume = resume
+            job_application.cover_letter = cover_letter
+            job_application.additional_documents = additional_documents
+            job_application.save()
+
+            return redirect('all_jobs')  # Assuming you have a view to list all jobs
+    else:
+        job_application_form = JobApplicationForm(initial={'job_posting': job_posting})
+        resume_form = DocumentForm(prefix='resume')
+        cover_letter_form = DocumentForm(prefix='cover_letter')
+        additional_documents_form = DocumentForm(prefix='additional_documents')
+
+    return render(request, 'tracker/create_application.html', {
+        'job_application_form': job_application_form,
+        'resume_form': resume_form,
+        'cover_letter_form': cover_letter_form,
+        'additional_documents_form': additional_documents_form,
+        'job_posting': job_posting,
+    })

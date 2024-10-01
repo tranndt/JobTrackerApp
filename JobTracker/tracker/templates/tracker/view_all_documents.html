@@ -3,8 +3,9 @@
 {% block content %}
 <h2>My Documents</h2>
 <a href="{% url 'create_document' %}" class="btn btn-primary">New Document</a>
-
 <!-- Resumes Section -->
+<br>
+<br>
 <div class="document-section"  style="width: 100%;">
     <h3>Resumes</h3>
     {% if resumes %}
@@ -16,7 +17,7 @@
         </tr>
         {% for document in resumes %}
         <tr>
-            <td style="font-style: italic;">{{ document.document_name }}</td>
+            <td style="color: red">{{ document.document_name }}</td>
             <td>{{ document.date_uploaded }}</td>
             <td>
                 <a href="{% url 'view_document' document.id %}">View</a> |
@@ -30,7 +31,7 @@
         <p>No resumes available.</p>
     {% endif %}
 </div>
-
+<br>
 <!-- Cover Letters Section -->
 <div class="document-section" style="width: 100%;">
     <h3>Cover Letters</h3>
@@ -43,7 +44,7 @@
         </tr>
         {% for document in cover_letters %}
         <tr>
-            <td style="font-style: italic;">{{ document.document_name }}</td>
+            <td style="color: red">{{ document.document_name }}</td>
             <td>{{ document.date_uploaded }}</td>
             <td>
                 <a href="{% url 'view_document' document.id %}">View</a> |
@@ -59,7 +60,7 @@
     {% endif %}
 
 </div>
-
+<br>
 <!-- Other Documents Section -->
 <div class="document-section" style="width: 100%;">
     <h3>Other Documents</h3>
@@ -72,7 +73,7 @@
         </tr>
         {% for document in others %}
         <tr>
-            <td style="font-style: italic;">{{ document.document_name }}</td>
+            <td style="color: red">{{ document.document_name }}</td>
             <td>{{ document.date_uploaded }}</td>
             <td>
                 <a href="{% url 'view_document' document.id %}">View</a> |

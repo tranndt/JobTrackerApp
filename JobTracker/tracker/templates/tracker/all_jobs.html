@@ -16,6 +16,7 @@
                 <th>Location</th>
                 <th>Remote</th>
                 <th>Actions</th>
+                <th>Application</th>
             </tr>
         </thead>
         <tbody>
@@ -30,6 +31,15 @@
                     <a href="{% url 'edit_job' job.id %}">Edit</a> |
                     <a href="{% url 'delete_job' job.id %}">Delete</a>
                 </td>
+                {% if not job.has_application %}
+                <td>
+                    <a href="{% url 'create_application' job.id %}">Create Application</a>
+                </td>
+                {% else %}
+                <td>
+                     View Application
+                </td>
+                {% endif %}
             </tr>
             {% endfor %}
         </tbody>

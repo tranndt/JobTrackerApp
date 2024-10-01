@@ -42,3 +42,6 @@
 
 #6.5:
 - Delete Document entry on DB also delete locally
+
+#7.0:
+- Added Select/Upload Application (tbc)
