@@ -45,3 +45,7 @@
 
 #7.0:
 - Added Select/Upload Application (tbc)
+
+#7.1:
+- Moved Create Application to its own window
+- Narrowed selections in resume, cover letter, other
