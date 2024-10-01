@@ -5,8 +5,9 @@ from .models import JobApplication, JobPosting, Document
 class JobApplicationForm(forms.ModelForm):
     class Meta:
         model = JobApplication
-        fields = ['resume', 'cover_letter', 'additional_documents', 'notes', 'status']
+        fields = ['job_posting', 'resume', 'cover_letter', 'additional_documents', 'notes', 'status']
         widgets = {
+            'job_posting': forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off', 'readonly': 'readonly'}),
             'resume': forms.Select(attrs={'class': 'form-control'}),
             'cover_letter': forms.Select(attrs={'class': 'form-control'}),
             'additional_documents': forms.Select(attrs={'class': 'form-control'}),

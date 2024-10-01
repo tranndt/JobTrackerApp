@@ -1,0 +1,14 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<h2>Job Application for {{ job_application.job_posting.title }}</h2>
+<p><strong>Status: </strong>{{ job_application.status }}</p>
+<p><strong>Application Date: </strong>{{ job_application.application_date }}</p>
+<p><strong>Resume:</strong> {{ job_application.resume }}</p>
+<p><strong>Cover Letter:</strong> {{ job_application.cover_letter }}</p>
+<p><strong>Additional Documents:</strong> {{ job_application.additional_documents }}</p>
+<a href="{% url 'edit_application' job_application.job_posting.id %}" class="btn btn-primary">Edit</a>
+<a href="{% url 'view_job' job_application.job_posting.id %}" class="btn btn-secondary">Back to Job</a>
+
+
+{% endblock %}

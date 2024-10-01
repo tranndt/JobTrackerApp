@@ -239,9 +239,29 @@ def create_application(request, job_id):
             job_application.save()
             return redirect('all_jobs')  # Assuming you have a view to list all jobs
     else:
-        job_application_form = JobApplicationForm(initial={'job': job})
+        job_application_form = JobApplicationForm(initial={'job_posting': job})
 
     return render(request, 'tracker/create_application.html', {
         'job_application_form': job_application_form,
         'job': job,
+    })
+
+def view_application(request, job_id):
+    job_application = get_object_or_404(JobApplication, job_posting_id=job_id)
+    return render(request, 'tracker/view_application.html', {'job_application': job_application})
+
+def edit_application(request, job_id):
+    job_application = get_object_or_404(JobApplication, job_posting_id=job_id)
+    
+    if request.method == 'POST':
+        job_application_form = JobApplicationForm(request.POST, instance=job_application)
+        
+        if job_application_form.is_valid():
+            job_application_form.save()
+            return redirect('view_application', job_id=job_id)
+    else:
+        job_application_form = JobApplicationForm(instance=job_application)
+    return render(request, 'tracker/edit_application.html', {
+        'job_application_form': job_application_form,
+        'job_application': job_application,
     })

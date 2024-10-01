@@ -10,12 +10,15 @@ urlpatterns = [
     path('jobs/<int:job_id>/', views.view_job, name='view_job'),
     path('jobs/<int:job_id>/delete/', views.delete_job, name='delete_job'),
     path('jobs/<int:job_id>/edit/', views.edit_job, name='edit_job'),  # New edit route
-    path('jobs/<int:job_id>/apply',views.create_application , name='create_application'),
+    path('apply/<int:job_id>/',views.view_application , name='view_application'),
+    path('apply/<int:job_id>/new',views.create_application , name='create_application'),
+    path('apply/<int:job_id>/edit',views.edit_application , name='edit_application'),
     path('jobs/new/import/', views.import_from_url_view, name='import_from_url'),
     path('documents/', views.view_all_documents, name='view_all_documents'),
     path('documents/new/', views.create_document, name='create_document'),
     path('documents/<int:document_id>/', views.view_document, name='view_document'),
     path('documents/<int:document_id>/edit/', views.edit_document, name='edit_document'),
     path('documents/<int:document_id>/delete/', views.delete_document, name='delete_document'),
+
 
 ]
