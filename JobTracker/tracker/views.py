@@ -229,36 +229,19 @@ def delete_document(request, document_id):
     return render(request, 'tracker/delete_document.html', {'document': document})
 
 def create_application(request, job_id):
-    job_posting = get_object_or_404(JobPosting, id=job_id)
+    job = get_object_or_404(JobPosting, id=job_id)
     if request.method == 'POST':
         job_application_form = JobApplicationForm(request.POST)
-        resume_form = DocumentForm(request.POST, request.FILES, prefix='resume')
-        cover_letter_form = DocumentForm(request.POST, request.FILES, prefix='cover_letter')
-        additional_documents_form = DocumentForm(request.POST, request.FILES, prefix='additional_documents')
-
-        if job_application_form.is_valid() and resume_form.is_valid() and cover_letter_form.is_valid() and additional_documents_form.is_valid():
-            resume = resume_form.save()
-            cover_letter = cover_letter_form.save()
-            additional_documents = additional_documents_form.save()
-
+        
+        if job_application_form.is_valid():
             job_application = job_application_form.save(commit=False)
-            job_application.job_posting = job_posting
-            job_application.resume = resume
-            job_application.cover_letter = cover_letter
-            job_application.additional_documents = additional_documents
+            job_application.job_posting = job
             job_application.save()
-
             return redirect('all_jobs')  # Assuming you have a view to list all jobs
     else:
-        job_application_form = JobApplicationForm(initial={'job_posting': job_posting})
-        resume_form = DocumentForm(prefix='resume')
-        cover_letter_form = DocumentForm(prefix='cover_letter')
-        additional_documents_form = DocumentForm(prefix='additional_documents')
+        job_application_form = JobApplicationForm(initial={'job': job})
 
     return render(request, 'tracker/create_application.html', {
         'job_application_form': job_application_form,
-        'resume_form': resume_form,
-        'cover_letter_form': cover_letter_form,
-        'additional_documents_form': additional_documents_form,
-        'job_posting': job_posting,
+        'job': job,
     })

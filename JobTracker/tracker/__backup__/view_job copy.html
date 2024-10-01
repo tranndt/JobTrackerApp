@@ -1,0 +1,250 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Posting</title>
+    <style>
+        /* Add some basic styling for the map */
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+    <!-- Include Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Include Leaflet MarkerCluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+</head>
+<body>
+    <h2>View Job</h2>
+    <h4><strong>Job Title: </strong>{{ job.job_title }}</h4>
+    <h5><strong>Company: </strong>{{ job.company_name }}</h5>
+    <p><strong>Location:</strong> {{ job.location }}</p>
+    <p><strong>Date Created:</strong> {{ job.date_created }}</p>
+    <p><strong>Posting URL:</strong> <a href="{{ job.posting_url }}" target="_blank">{{ job.posting_url|slice:":50" }}...{{ job.posting_url|slice:"-50:" }}</a></p>    <p><strong>Job Description:</strong></p>
+    <div>{{ job.description|safe }}</div>
+
+    <!-- Map container -->
+    <div class="map-container">
+        <p><strong>Map:</strong></p>
+
+        <div id="map">
+        <!-- Include Leaflet JavaScript -->
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <!-- Include Leaflet MarkerCluster JavaScript -->
+        <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+        <script>
+            // Extract latitude and longitude from the current job posting
+            var latitude = {{ job.latitude }};
+            var longitude = {{ job.longitude }};
+
+            // Initialize the map and set the view to the job posting's location
+            var map = L.map('map').setView([latitude, longitude], 6);
+
+            // Add monochrome tile layer
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://carto.com/attributions">CartoDB</a>'
+            }).addTo(map);
+
+            // Create a marker for the current job posting
+            var marker = L.marker([latitude, longitude])
+                .bindPopup(`<b>{{ job.company_name }}</b><br>{{ job.location }}`);
+
+            // Add the marker to the map
+            marker.addTo(map);
+        </script>
+        </div>
+    </div>
+    <br>
+    <div>
+        <a href="{% url 'edit_job' job.pk %}" class="btn btn-primary">Edit</a>
+        <form action="{% url 'delete_job' job.pk %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+        <a href="{% url 'all_jobs' %}" class="btn btn-secondary">Back to My Jobs</a>
+    </div>
+
+    <br>
+<br>
+<h2>My Application</h2>
+<br>
+<button id="createApplicationBtn" class="btn btn-primary">Create Application</button>
+
+<!-- Hidden form for creating application -->
+<div id="createApplicationForm" style="display:none; margin-top: 20px;">
+    <form action="{% url 'create_application' job.id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Section: Resume -->
+        <div class="form-group">
+            <h3>Resume</h3>
+            <button type="button" class="btn btn-secondary" onclick="toggleForm('selectResumeForm', 'uploadResumeForm')">Select</button>
+            <button type="button" class="btn btn-secondary" onclick="toggleForm('uploadResumeForm', 'selectResumeForm')">Upload</button>
+
+            <!-- Upload Resume Form -->
+            <div id="uploadResumeForm" style="display:none; margin-top: 10px;">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ document_form.as_p }}
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
+
+            <!-- Select Resume Form -->
+            <div id="selectResumeForm" style="display:none; margin-top: 10px;">
+                <label for="existing_resume">Existing Resume:</label>
+                <select id="existing_resume" name="existing_resume" class="form-control">
+                    <option value="">Select a document</option>
+                    {% for document in documents %}
+                        {% if document.type == 'resume' %}
+                            <option value="{{ document.id }}">{{ document.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        <!-- Section: Cover Letter -->
+        <div class="form-group">
+            <h3>Cover Letter</h3>
+            <button type="button" class="btn btn-secondary" onclick="toggleForm('selectCoverLetterForm', 'uploadCoverLetterForm')">Select</button>
+            <button type="button" class="btn btn-secondary" onclick="toggleForm('uploadCoverLetterForm', 'selectCoverLetterForm')">Upload</button>
+
+            <!-- Upload Cover Letter Form -->
+            <div id="uploadCoverLetterForm" style="display:none; margin-top: 10px;">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ document_form.as_p }}
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
+
+            <!-- Select Cover Letter Form -->
+            <div id="selectCoverLetterForm" style="display:none; margin-top: 10px;">
+                <label for="existing_cover_letter">Existing Cover Letter:</label>
+                <select id="existing_cover_letter" name="existing_cover_letter" class="form-control">
+                    <option value="">Select a document</option>
+                    {% for document in documents %}
+                        {% if document.type == 'cover_letter' %}
+                            <option value="{{ document.id }}">{{ document.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        <!-- Section: Other Documents -->
+        <div class="form-group">
+            <h3>Other Documents</h3>
+            <button type="button" class="btn btn-secondary" onclick="toggleForm('selectOtherDocumentForm', 'uploadOtherDocumentForm')">Select</button>
+            <button type="button" class="btn btn-secondary" onclick="toggleForm('uploadOtherDocumentForm', 'selectOtherDocumentForm')">Upload</button>
+            
+            <!-- Upload Other Document Form -->
+            <div id="uploadOtherDocumentForm" style="display:none; margin-top: 10px;">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ document_form.as_p }}
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
+            
+            <!-- Select Other Document Form -->
+            <div id="selectOtherDocumentForm" style="display:none; margin-top: 10px;">
+                <label for="existing_other_document">Existing Document:</label>
+                <select id="existing_other_document" name="existing_other_document" class="form-control">
+                    <option value="">Select a document</option>
+                    {% for document in documents %}
+                        {% if document.type == 'other' %}
+                            <option value="{{ document.id }}">{{ document.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+                <!-- Save Application Button -->
+        <div class="form-group">
+            <button type="button" class="btn btn-primary" onclick="saveApplication()">Save Application</button>
+        </div>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <!-- Include jQuery before Bootstrap's JavaScript -->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <!-- JavaScript to handle form display -->
+        <script>
+            function toggleForm(showFormId, hideFormId) {
+                var showForm = document.getElementById(showFormId);
+                var hideForm = document.getElementById(hideFormId);
+                
+                if (showForm.style.display === "none" || showForm.style.display === "") {
+                    showForm.style.display = "block";
+                    hideForm.style.display = "none";
+                } else {
+                    showForm.style.display = "none";
+                }
+            }
+
+            // Toggle the main application form
+            document.getElementById('createApplicationBtn').onclick = function() {
+                var form = document.getElementById('createApplicationForm');
+                if (form.style.display === "none" || form.style.display === "") {
+                    form.style.display = "block";
+                } else {
+                    form.style.display = "none";
+                }
+            }
+
+            // Function to handle saving the application
+            function saveApplication() {
+                // Collect data from the forms
+                var resume = document.getElementById('existing_resume').value;
+                var coverLetter = document.getElementById('existing_cover_letter').value;
+                var otherDocument = document.getElementById('existing_other_document').value;
+
+                // Create a form data object
+                var formData = new FormData();
+                formData.append('resume', resume);
+                formData.append('cover_letter', coverLetter);
+                formData.append('other_document', otherDocument);
+                console.log(formData);
+
+                // Send the data to the server using AJAX
+                $.ajax({
+                    url: '{% url "create_application" job.id %}',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        alert('Application saved successfully!');
+                        // Optionally, you can redirect the user or update the page content
+                    },
+                    error: function(response) {
+                        alert('An error occurred while saving the application.');
+                    }
+                });
+            }
+        </script>
+
+
+
+</body>
+</html>
+{% endblock %}

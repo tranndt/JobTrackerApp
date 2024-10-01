@@ -43,14 +43,19 @@ class JobPosting(models.Model):
         # Geocode location into latitude and longitude
         if not self.latitude or not self.longitude:
             geolocator = Nominatim(user_agent="job_tracker_app")
-            location = geolocator.geocode(self.location)
-            if location:
-                self.latitude = location.latitude
-                self.longitude = location.longitude
+            try:
+                location = geolocator.geocode(self.location)
+                if location:
+                    self.latitude = location.latitude
+                    self.longitude = location.longitude
+            except:
+                print(f"Error geocoding location {self.location}")
+                self.latitude = 0
+                self.longitude = 0
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.company_name} - {self.job_title}"
+        return f"{self.company_name} - {self.job_title} (JobID: {self.id})"
 
 class JobApplication(models.Model):
     job_posting = models.OneToOneField(JobPosting, on_delete=models.CASCADE, related_name='application', default=None)

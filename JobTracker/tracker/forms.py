@@ -1,19 +1,31 @@
 # tracker/forms.py
 from django import forms
-from .models import JobApplication, JobPosting
+from .models import JobApplication, JobPosting, Document
 
 class JobApplicationForm(forms.ModelForm):
     class Meta:
         model = JobApplication
-        fields = ['job_posting', 'resume', 'cover_letter', 'additional_documents', 'notes', 'status']
+        fields = ['resume', 'cover_letter', 'additional_documents', 'notes', 'status']
         widgets = {
-            'job_posting': forms.Select(attrs={'class': 'form-control', 'readonly': 'readonly'}),
             'resume': forms.Select(attrs={'class': 'form-control'}),
             'cover_letter': forms.Select(attrs={'class': 'form-control'}),
             'additional_documents': forms.Select(attrs={'class': 'form-control'}),
             'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 8}),
             'status': forms.Select(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(JobApplicationForm, self).__init__(*args, **kwargs)
+        
+        # Define allowed document types
+        allowed_resume_types = ['resume']
+        allowed_cover_letter_types = ['cover_letter']
+        allowed_additional_document_types = ['other']
+
+        # Filter the queryset for each field
+        self.fields['resume'].queryset = Document.objects.filter(document_type__in=allowed_resume_types)
+        self.fields['cover_letter'].queryset = Document.objects.filter(document_type__in=allowed_cover_letter_types)
+        self.fields['additional_documents'].queryset = Document.objects.filter(document_type__in=allowed_additional_document_types)
 
 class JobPostingForm(forms.ModelForm):
     class Meta:
@@ -27,8 +39,6 @@ class JobPostingForm(forms.ModelForm):
             # 'is_remote': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 8, 'autocomplete': 'off'}),
         }
-
-from .models import Document
 
 class DocumentForm(forms.ModelForm):
     class Meta:

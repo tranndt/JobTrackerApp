@@ -1,6 +1,18 @@
-<h2>Submit a Job Application</h2>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Submit</button>
-</form>
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<h2>Create Application</h2>
+  <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <fieldset>
+          <legend>Job Posting</legend>
+          <a href="{% url 'view_job' job.pk %}">{{ job }}</a>
+      </fieldset>
+      <br>
+      <fieldset>
+          <legend>Job Application</legend>
+          {{ job_application_form.as_p }}
+      </fieldset>
+      <button type="submit">Submit Application</button>
+  </form>
+{% endblock %}
