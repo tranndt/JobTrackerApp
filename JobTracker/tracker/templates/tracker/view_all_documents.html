@@ -1,91 +1,110 @@
 {% extends 'tracker/base.html' %}
 
 {% block content %}
-<h2>My Documents</h2>
-<a href="{% url 'create_document' %}" class="btn btn-primary">New Document</a>
-<!-- Resumes Section -->
-<br>
-<br>
-<div class="document-section"  style="width: 100%;">
-    <h3>Resumes</h3>
-    {% if resumes %}
-    <table style="width: 100%;">
-        <tr>
-            <th>File Name</th>
-            <th>Created</th>
-            <th>Actions</th>
-        </tr>
-        {% for document in resumes %}
-        <tr>
-            <td style="color: red">{{ document.document_name }}</td>
-            <td>{{ document.date_uploaded }}</td>
-            <td>
-                <a href="{% url 'view_document' document.id %}">View</a> |
-                <a href="{% url 'edit_document' document.id %}">Edit</a> |
-                <a href="{% url 'delete_document' document.id %}">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-        <p>No resumes available.</p>
-    {% endif %}
-</div>
-<br>
-<!-- Cover Letters Section -->
-<div class="document-section" style="width: 100%;">
-    <h3>Cover Letters</h3>
-    {% if cover_letters %}
-    <table style="width: 100%;">
-        <tr>
-            <th>File Name</th>
-            <th>Created</th>
-            <th>Actions</th>
-        </tr>
-        {% for document in cover_letters %}
-        <tr>
-            <td style="color: red">{{ document.document_name }}</td>
-            <td>{{ document.date_uploaded }}</td>
-            <td>
-                <a href="{% url 'view_document' document.id %}">View</a> |
-                <a href="{% url 'edit_document' document.id %}">Edit</a> |
-                <a href="{% url 'delete_document' document.id %}">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+<head>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h2>My Documents</h2>
+    <a href="{% url 'create_document' %}" class="btn btn-primary">New Document</a>
+    <!-- Resumes Section -->
+    <br>
+    <br>
+    <div class="document-section">
+        <h3>Resumes</h3>
+        {% if resumes %}
+        <table>
+            <tr>
+                <th>File Name</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+            {% for document in resumes %}
+            <tr>
+                <td style="color: red">{{ document.document_name }}</td>
+                <td>{{ document.date_uploaded }}</td>
+                <td>
+                    <a href="{% url 'view_document' document.id %}">View</a> |
+                    <a href="{% url 'edit_document' document.id %}">Edit</a> |
+                    <a href="{% url 'delete_document' document.id %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            <p>No resumes available.</p>
+        {% endif %}
+    </div>
+    <br>
+    <!-- Cover Letters Section -->
+    <div class="document-section">
+        <h3>Cover Letters</h3>
+        {% if cover_letters %}
+        <table>
+            <tr>
+                <th>File Name</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+            {% for document in cover_letters %}
+            <tr>
+                <td style="color: red">{{ document.document_name }}</td>
+                <td>{{ document.date_uploaded }}</td>
+                <td>
+                    <a href="{% url 'view_document' document.id %}">View</a> |
+                    <a href="{% url 'edit_document' document.id %}">Edit</a> |
+                    <a href="{% url 'delete_document' document.id %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    
+        {% else %}
+            <p>No cover letters available.</p>
+        {% endif %}
+    
+    </div>
+    <br>
+    <!-- Other Documents Section -->
+    <div class="document-section">
+        <h3>Other Documents</h3>
+        {% if others %}
+        <table>
+            <tr>
+                <th>File Name</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+            {% for document in others %}
+            <tr>
+                <td style="color: red">{{ document.document_name }}</td>
+                <td>{{ document.date_uploaded }}</td>
+                <td>
+                    <a href="{% url 'view_document' document.id %}">View</a> |
+                    <a href="{% url 'edit_document' document.id %}">Edit</a> |
+                    <a href="{% url 'delete_document' document.id %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    
+        {% else %}
+            <p>No other documents available.</p>
+        {% endif %}
+    </div>
+</body>
 
-    {% else %}
-        <p>No cover letters available.</p>
-    {% endif %}
-
-</div>
-<br>
-<!-- Other Documents Section -->
-<div class="document-section" style="width: 100%;">
-    <h3>Other Documents</h3>
-    {% if others %}
-    <table style="width: 100%;">
-        <tr>
-            <th>File Name</th>
-            <th>Created</th>
-            <th>Actions</th>
-        </tr>
-        {% for document in others %}
-        <tr>
-            <td style="color: red">{{ document.document_name }}</td>
-            <td>{{ document.date_uploaded }}</td>
-            <td>
-                <a href="{% url 'view_document' document.id %}">View</a> |
-                <a href="{% url 'edit_document' document.id %}">Edit</a> |
-                <a href="{% url 'delete_document' document.id %}">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-
-    {% else %}
-        <p>No other documents available.</p>
-    {% endif %}
-</div>
 {% endblock %}

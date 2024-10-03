@@ -108,25 +108,32 @@ def map_view(request):
     job_postings_json = serialize('json', job_postings)
     return render(request, 'tracker/map_view.html', {'job_postings_json': job_postings_json})
 
+# def view_job(request, job_id):
+#     job = get_object_or_404(JobPosting, id=job_id)
+#     documents = Document.objects.all()
+#     document_form = DocumentForm()
+
+#     if request.method == 'POST':
+#         document_form = DocumentForm(request.POST, request.FILES)
+#         if document_form.is_valid():
+#             document_form.save()
+#             # Handle the rest of the application creation logic here
+
+#     context = {
+#         'job': job,
+#         'documents': documents,
+#         'document_form': document_form,
+#     }
+#     return render(request, 'tracker/view_job.html', context)
+
 def view_job(request, job_id):
     job = get_object_or_404(JobPosting, id=job_id)
-    documents = Document.objects.all()
-    document_form = DocumentForm()
-
-    if request.method == 'POST':
-        document_form = DocumentForm(request.POST, request.FILES)
-        if document_form.is_valid():
-            document_form.save()
-            # Handle the rest of the application creation logic here
-
-    context = {
+    job_application = JobApplication.objects.filter(job_posting=job).first()
+    
+    return render(request, 'tracker/view_job.html', {
         'job': job,
-        'documents': documents,
-        'document_form': document_form,
-    }
-    return render(request, 'tracker/view_job.html', context)
-
-from django.shortcuts import get_object_or_404
+        'job_application': job_application,
+    })
 
 def delete_job(request, job_id):
     job = get_object_or_404(JobPosting, id=job_id)

@@ -50,3 +50,8 @@
 - Moved Create Application to its own window
 - Narrowed selections in resume, cover letter, other
 
+#7.2:
+- View, Edit application
+
+#7.3:
+- View application in view job

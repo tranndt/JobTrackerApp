@@ -1,48 +1,67 @@
 {% extends 'tracker/base.html' %}
 
 {% block content %}
-<h2>My Jobs</h2>
+<head>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h2>My Jobs</h2>
 
-<!-- Button to view the map -->
-<a href="{% url 'create_job' %}" class="btn btn-primary">New Posting</a>
+    <!-- Button to view the map -->
+    <a href="{% url 'create_job' %}" class="btn btn-primary">New Posting</a>
+    
+    <div class="container" style="width: 100%;">
+        <!-- Job job list -->
+        <table style="width: 100%;">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Company Name</th>
+                    <th>Location</th>
+                    <th>Remote</th>
+                    <th>Actions</th>
+                    <th>Application</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                <tr>
+                    <td>{{ job.job_title }}</td>
+                    <td>{{ job.company_name }}</td>
+                    <td>{{ job.location }}</td>
+                    <td>{{ job.is_remote|yesno:"Yes,No" }}</td>
+                    <td>
+                        <a href="{% url 'view_job' job.id %}">View</a> |
+                        <a href="{% url 'edit_job' job.id %}">Edit</a> |
+                        <a href="{% url 'delete_job' job.id %}">Delete</a>
+                    </td>
+                    {% if not job.has_application %}
+                    <td>
+                        <a href="{% url 'create_application' job.id %}">Create Application</a>
+                    </td>
+                    {% else %}
+                    <td>
+                         View Application
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
 
-<div class="container" style="width: 100%;">
-    <!-- Job job list -->
-    <table style="width: 100%;">
-        <thead>
-            <tr>
-                <th>Job Title</th>
-                <th>Company Name</th>
-                <th>Location</th>
-                <th>Remote</th>
-                <th>Actions</th>
-                <th>Application</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for job in jobs %}
-            <tr>
-                <td>{{ job.job_title }}</td>
-                <td>{{ job.company_name }}</td>
-                <td>{{ job.location }}</td>
-                <td>{{ job.is_remote|yesno:"Yes,No" }}</td>
-                <td>
-                    <a href="{% url 'view_job' job.id %}">View</a> |
-                    <a href="{% url 'edit_job' job.id %}">Edit</a> |
-                    <a href="{% url 'delete_job' job.id %}">Delete</a>
-                </td>
-                {% if not job.has_application %}
-                <td>
-                    <a href="{% url 'create_application' job.id %}">Create Application</a>
-                </td>
-                {% else %}
-                <td>
-                     View Application
-                </td>
-                {% endif %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
 {% endblock %}

@@ -18,15 +18,52 @@
     <!-- Include Leaflet MarkerCluster CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+            width: 20%;
+        }
+    </style>
 </head>
 <body>
-    <h2>View Job</h2>
-    <h4><strong>Job Title: </strong>{{ job.job_title }}</h4>
-    <h5><strong>Company: </strong>{{ job.company_name }}</h5>
-    <p><strong>Location:</strong> {{ job.location }}</p>
-    <p><strong>Date Created:</strong> {{ job.date_created }}</p>
-    <p><strong>Posting URL:</strong> <a href="{{ job.posting_url }}" target="_blank">{{ job.posting_url|slice:":50" }}...{{ job.posting_url|slice:"-50:" }}</a></p>    <p><strong>Job Description:</strong></p>
-    <div>{{ job.description|safe }}</div>
+    <h2>Job Details</h2>
+    <br>
+    <table>
+        <tr>
+            <th>Job Title</th>
+            <td><h4 style="color:navy;">{{ job.job_title }}</h4></td>
+        </tr>
+        <tr>
+            <th>Company</th>
+            <td><h5 style="color:navy;">{{ job.company_name }}</h5></td>
+        </tr>
+        <tr>
+            <th>Location</th>
+            <td>{{ job.location }}</td>
+        </tr>
+        <tr>
+            <th>Date Created</th>
+            <td>{{ job.date_created }}</td>
+        </tr>
+        <tr>
+            <th>Posting URL</th>
+            <td><a href="{{ job.posting_url }}" target="_blank">{{ job.posting_url|slice:":50" }}...{{ job.posting_url|slice:"-50:" }}</a></td>
+        </tr>
+        <tr>
+            <th>Job Description</th>
+            <td>{{ job.description }}</td>
+        </tr>
+    </table>
 
     <!-- Map container -->
     <div class="map-container">
@@ -61,23 +98,57 @@
     </div>
     <br>
     <div>
-        <a href="{% url 'edit_job' job.pk %}" class="btn btn-primary">Edit</a>
-        <form action="{% url 'delete_job' job.pk %}" method="post" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Delete</button>
-        </form>
-        <a href="{% url 'all_jobs' %}" class="btn btn-secondary">Back to My Jobs</a>
+        <a href="{% url 'edit_job' job.pk %}" class="btn btn-primary">Edit Job</a>
     </div>
-
-    <br>
-<br>
+<hr>
 <h2>My Application</h2>
 <br>
-<a href="{% url 'create_application' job.pk %}" class="btn btn-primary">Create Application</a>
-<a href="{% url 'view_application' job.pk %}" class="btn btn-primary">View Application</a>
+<!-- <a href="{% url 'create_application' job.pk %}" class="btn btn-primary">Create Application</a> -->
+<!-- <a href="{% url 'view_application' job.pk %}" class="btn btn-primary">View Application</a> -->
 
-
-
+{% if job_application %}
+    <table>
+        <tr>
+            <th>Application Date</th>
+            <td>{{ job_application.application_date }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td><span style="color:red;">{{ job_application.status }}</span></td>
+        </tr>
+        <tr>
+            <th>Resume</th>
+            <td>
+                <a href="{% url 'view_document' job_application.resume.id %}">
+                    {{ job_application.resume }}
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <th>Cover Letter</th>
+            <td>
+                <a href="{% url 'view_document' job_application.cover_letter.id %}">
+                    {{ job_application.cover_letter }}
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <th>Additional Documents</th>
+            <td>
+                <a href="{% url 'view_document' job_application.additional_documents.id %}">
+                    {{ job_application.additional_documents }}
+                </a>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <a href="{% url 'edit_application' job.id %}" class="btn btn-primary">Edit Application</a>
+{% else %}
+    <p>You have not applied for this job yet.</p>
+    <a href="{% url 'create_application' job.id %}" class="btn btn-primary">Create Application</a>
+{% endif %}
+<hr>
+<a href="{% url 'all_jobs' %}" class="btn btn-secondary">Back to My Jobs</a>
 
 
 </body>

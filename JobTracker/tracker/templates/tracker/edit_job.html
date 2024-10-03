@@ -8,6 +8,10 @@
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Submit</button>
     <a href="{% url 'view_job' job.id %}" class="btn btn-secondary">Cancel</a>
+    <form action="{% url 'delete_job' job.id %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
 </form>
 
 {% if messages %}
