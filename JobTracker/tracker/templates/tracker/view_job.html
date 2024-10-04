@@ -40,8 +40,11 @@
     <br>
     <table>
         <tr>
+            <th>Job ID</th>
+            <td style="color:grey;">{{ job.id }}</td>
+        <tr>
             <th>Job Title</th>
-            <td><h4 style="color:navy;">{{ job.job_title }}</h4></td>
+            <td><h4 style="color:red;">{{ job.job_title }}</h4></td>
         </tr>
         <tr>
             <th>Company</th>
@@ -49,7 +52,7 @@
         </tr>
         <tr>
             <th>Location</th>
-            <td>{{ job.location }}</td>
+            <td><strong>{{ job.location }}</strong></td>
         </tr>
         <tr>
             <th>Date Created</th>
@@ -57,13 +60,19 @@
         </tr>
         <tr>
             <th>Posting URL</th>
-            <td><a href="{{ job.posting_url }}" target="_blank">{{ job.posting_url|slice:":50" }}...{{ job.posting_url|slice:"-50:" }}</a></td>
-        </tr>
-        <tr>
-            <th>Job Description</th>
-            <td>{{ job.description }}</td>
+            <td><a href="{{ job.posting_url }}" target="_blank">
+                {% if job.posting_url|length > 100 %}
+                    {{ job.posting_url|slice:":50" }}...{{ job.posting_url|slice:"-50:" }}
+                {% else %}
+                    {{ job.posting_url }}
+                {% endif %}
+            </a></td>
         </tr>
     </table>
+    <br>
+    <p><strong>Job Description:</strong></p>
+    <p>{{ job.description|safe }}</p>
+    <!-- <p><strong>Map:</strong></p> -->
 
     <!-- Map container -->
     <div class="map-container">
@@ -139,6 +148,10 @@
                     {{ job_application.additional_documents }}
                 </a>
             </td>
+        </tr>
+        <tr>
+            <th>Notes</th>
+            <td><pre>{{ job_application.notes }}</pre></td>
         </tr>
     </table>
     <br>

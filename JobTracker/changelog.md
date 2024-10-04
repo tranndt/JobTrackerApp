@@ -55,3 +55,6 @@
 
 #7.3:
 - View application in view job
+
+#7.4:
+- Minor changes to view job

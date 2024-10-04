@@ -5,6 +5,9 @@
 
 <form method="post" enctype="multipart/form-data" id="uploadForm">
     {% csrf_token %}
+    <p>Job ID</p>
+    <input type="text" name="job_id" value="{{ job.id }}" readonly="readOnly" class="form-control">
+    <br>
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Submit</button>
     <a href="{% url 'view_job' job.id %}" class="btn btn-secondary">Cancel</a>

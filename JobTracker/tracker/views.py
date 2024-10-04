@@ -101,7 +101,14 @@ def edit_job(request, job_id):
 
 def all_jobs(request):
     jobs = JobPosting.objects.all()
-    return render(request, 'tracker/all_jobs.html', {'jobs': jobs})
+    job_applications = JobApplication.objects.all()
+    job_application_dict = {app.job_posting.id: app for app in job_applications}
+    print(job_application_dict)
+    
+    return render(request, 'tracker/all_jobs.html', {
+        'jobs': jobs,
+        'job_application_dict': job_application_dict,
+    })
 
 def map_view(request):
     job_postings = JobPosting.objects.all()
@@ -237,12 +244,18 @@ def delete_document(request, document_id):
 
 def create_application(request, job_id):
     job = get_object_or_404(JobPosting, id=job_id)
+    job_application = JobApplication.objects.filter(job_posting=job).first()
+
+    if job_application:
+        return redirect('edit_application', application_id=job.id)
+
     if request.method == 'POST':
         job_application_form = JobApplicationForm(request.POST)
         
         if job_application_form.is_valid():
             job_application = job_application_form.save(commit=False)
             job_application.job_posting = job
+            job_application.user = request.user  # Assuming you have a user field in JobApplication
             job_application.save()
             return redirect('all_jobs')  # Assuming you have a view to list all jobs
     else:

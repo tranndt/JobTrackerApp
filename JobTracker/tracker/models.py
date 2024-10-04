@@ -19,7 +19,8 @@ class Document(models.Model):
     date_uploaded = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f"{self.get_document_type_display()} uploaded on {self.date_uploaded.strftime('%Y-%m-%d %H:%M:%S')}"
+        # return f"{self.get_document_type_display()} uploaded on {self.date_uploaded.strftime('%Y-%m-%d %H:%M:%S')}"
+        return f"{self.document_name} - {self.date_uploaded.strftime('%Y-%m-%d %H:%M:%S')}"
     
     def save(self, *args, **kwargs):
         if self.file and not self.document_name:

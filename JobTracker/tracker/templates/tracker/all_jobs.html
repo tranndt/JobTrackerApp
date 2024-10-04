@@ -1,6 +1,8 @@
 {% extends 'tracker/base.html' %}
 
 {% block content %}
+{% load custom_filters %}
+
 <head>
     <style>
         table {
@@ -23,45 +25,40 @@
     <!-- Button to view the map -->
     <a href="{% url 'create_job' %}" class="btn btn-primary">New Posting</a>
     
-    <div class="container" style="width: 100%;">
-        <!-- Job job list -->
-        <table style="width: 100%;">
-            <thead>
-                <tr>
-                    <th>Job Title</th>
-                    <th>Company Name</th>
-                    <th>Location</th>
-                    <th>Remote</th>
-                    <th>Actions</th>
-                    <th>Application</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for job in jobs %}
-                <tr>
-                    <td>{{ job.job_title }}</td>
-                    <td>{{ job.company_name }}</td>
-                    <td>{{ job.location }}</td>
-                    <td>{{ job.is_remote|yesno:"Yes,No" }}</td>
-                    <td>
-                        <a href="{% url 'view_job' job.id %}">View</a> |
-                        <a href="{% url 'edit_job' job.id %}">Edit</a> |
-                        <a href="{% url 'delete_job' job.id %}">Delete</a>
-                    </td>
-                    {% if not job.has_application %}
-                    <td>
-                        <a href="{% url 'create_application' job.id %}">Create Application</a>
-                    </td>
+    <!-- Job job list -->
+    <hr>
+    <table style="width: 100%;">
+        <thead>
+            <tr>
+                <th>JobID</th>
+                <th>Job Title</th>
+                <th>Company Name</th>
+                <th>Location</th>
+                <th>Remote</th>
+                <th>Application</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in jobs %}
+            <tr>
+                <td style="color:grey">{{ job.id }}</td>
+                <td><a href="{% url 'view_job' job.id %}">{{ job.job_title }}</a></td>
+                <td style="color:navy">{{ job.company_name }}</td>
+                <td>{{ job.location }}</td>
+                <td>{{ job.is_remote|yesno:"Y,N" }}</td>
+                <td>
+                    {% with job_application=job_application_dict|get_item:job.id %}
+                    {% if job_application %}
+                        {{ job_application.status }}
                     {% else %}
-                    <td>
-                         View Application
-                    </td>
+                        Not Applied
                     {% endif %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                {% endwith %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 
 {% endblock %}
